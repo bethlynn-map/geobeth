@@ -20,53 +20,6 @@
             height: 95%;
         }
 
-.info {
-    z-index: 1000;
-    position: absolute;
-    right: 40%;
-    top: 5%;
-    padding: 6px 8px;
-    font: 14px Arial, Helvetica, sans-serif;
-    text-align: center;
-    background: white;
-    background: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-}
-
-.info h1 {
-    font-size: 16px;
-    margin: 0 0 5px;
-    color: #777777;
-}
-
-
-.legend {
-    line-height: 18px;
-    color: #333333;
-    font-family: 'Open Sans', Helvetica, sans-serif;
-    padding: 6px 8px;
-    background: white;
-    background: rgba(255,255,255,0.8);
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    border-radius: 5px;
-}
-
-.legend i {
-    width: 28px;
-    height: 18px;
-    float: left;
-    margin-right: 8px;
-    opacity: 0.7;
-}
-
-
-.legend p {
-    font-size: 12px;
-    line-height: 18px;
-    margin: 0;
-}
-
 
     </style>
 </head>
@@ -75,16 +28,16 @@
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
    crossorigin=""></script>
-    <div id="map" style="width: 1000px; height: 600px">
+    <div id="mapid" style="width: 1000px; height: 600px">
     </div>
     <script>
-        var map = L.map('map', {center: [39.981192, -75.155399], zoom: 10});
+        var phlmap = L.map('mapid', {center: [39.981192, -75.155399], zoom: 10});
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: 18,
         id: 'mapbox.mapbox-streets-v8',
         accessToken: 'pk.eyJ1IjoiYmV0aGx5bm4iLCJhIjoiY2s0NXBnYWVuMGJ5bjNrbzkxZnVuNXhiYiJ9.yatxgVacgYjZLPb7unNdFA'
-    }).addTo(map);
+    }).addTo(phlmap);
 
     </script>
 </body>
