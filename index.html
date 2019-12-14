@@ -2,10 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
-   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-   crossorigin=""/>
+    <title>Leaflet Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css"/>
     <style>
         html { height:100%;}
         body {
@@ -20,60 +18,147 @@
             height: 95%;
         }
 
+.info {
+    z-index: 1000;
+    position: absolute;
+    right: 40%;
+    top: 5%;
+    padding: 6px 8px;
+    font: 14px Arial, Helvetica, sans-serif;
+    text-align: center;
+    background: white;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+}
+
+.info h1 {
+    font-size: 16px;
+    margin: 0 0 5px;
+    color: #777777;
+}
+
+
+.legend {
+    line-height: 18px;
+    color: #333333;
+    font-family: 'Open Sans', Helvetica, sans-serif;
+    padding: 6px 8px;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+
+.legend i {
+    width: 28px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.7;
+}
+
+
+.legend p {
+    font-size: 12px;
+    line-height: 18px;
+    margin: 0;
+}
+
 
     </style>
 </head>
 <body>
     <!-- Our web map and content will go here -->
-    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
-   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
-   crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <div id="mapid">
+    <div id="mapid" style="width: 1000px; height: 600px">
     </div>
     <script>
-        var tractdata = null;
-            $.getJSON("data/tracts_final.geojson",function(data){
-            tractdata = L.geoJson(data, {
-            style: style,
+function setColorFunc(density){
+    return density > 53 ? '#a50f15' :
+           density > 31 ? '#de2d26' :
+           density > 19 ? '#fb6a4a' :
+           density > 4 ? '#fcae91' :
+                         '#fee5d9';
+};
+function styleFunc(feature) {
+    return {
+        fillColor: setColorFunc(feature.properties.Total_Popu),
+        fillOpacity: 0.9,
+        weight: 1,
+        opacity: 1,
+        color: '#ffffff',
+        dashArray: '3'
+    };
+}
+
+function highlightFeature(e){
+    var layer = e.target;
+
+    layer.setStyle({
+        weight: 5,
+        color: '#666',
+        dashArray: '',
+        fillOpacity: 0.5
+    });
+    // for different web browsers
+    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+        layer.bringToFront();
+    }
+}
+function resetHighlight(e) {
+    tractsLayer.resetStyle(e.target);
+}  
+function zoomFeature(e){
+    console.log(e.target.getBounds());
+    map.fitBounds(e.target.getBounds().pad(1.5));
+}
+function onEachFeature(feature, layer){
+    layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: zoomFeature
+    });
+    layer.bindPopup('Children with elevated BLL: '+feature.properties.Total_Popu);
+}
+ var tractsLayer = null;
+    $.getJSON("data/tracts_final.geojson",function(data){
+        tractsLayer = L.geoJson(data, {
+            style: styleFunc,
             onEachFeature: onEachFeature
-        }).addTo(phlmap);
-        });
+        }).addTo(map);
+    });
+        var map = L.map('mapid', {center: [39.981192, -75.155399], zoom: 10});
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+        map.doubleClickZoom.disable();
 
-        var phlmap = L.map('mapid', {center: [39.981192, -75.155399], zoom: 11});
-        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        maxZoom: 18,
-        id: 'mapbox/light-v9',
-        accessToken: 'pk.eyJ1IjoiYmV0aGx5bm4iLCJhIjoiY2s0NXBnYWVuMGJ5bjNrbzkxZnVuNXhiYiJ9.yatxgVacgYjZLPb7unNdFA'
+//myDataPoint.bindPopup("Commute to Work");
+L.control.scale({position: 'bottomleft'}).addTo(map);
 
-        }).addTo(phlmap);   
+var legend = L.control({position: 'bottomright'});
 
-        function getColor(d) {
-            return d > 51   ? '#08519c' :
-                   d > 36   ? '#3182bd' :
-                   d > 21   ? '#6baed6' :
-                   d > 4    ? '#bdd7e7' :
-                              '#eff3ff';
-        function style(feature) {
-            return {
-                fillColor: getColor(feature.properties.Percent__2),
-                weight: 2,
-                opacity: 1,
-                color: 'white',
-                dashArray: '3',
-                fillOpacity: 0.7
-            };
-            }     
-        function onEachFeature(feature, layer){
-            layer.on({
-                mouseover: highlightFeature,
-                mouseout: resetHighlight,
-                click: zoomFeature
-            });
-            layer.bindPopup('Percent Children 5-17 years below povery: '+feature.properties.Percent__2);
-            };
-            };   
+legend.onAdd = function (map) {
+    // Create Div Element and Populate it with HTML
+    var div = L.DomUtil.create('div', 'legend');            
+    div.innerHTML += '<b>Children with elevated BLL</b><br />';
+    div.innerHTML += 'by census tract, quantile distribution<br />';
+    div.innerHTML += '<br>';
+    div.innerHTML += '<i style="background: #a50f15"></i><p>26-81</p>';
+    div.innerHTML += '<i style="background: #de2d26"></i><p>14-26</p>';
+    div.innerHTML += '<i style="background: #fb6a4a"></i><p>7-14</p>';
+    div.innerHTML += '<i style="background: #fcae91"></i><p>0-7</p>';
+    div.innerHTML += '<i style="background: #fee5d9"></i><p>No info</p>';
+    div.innerHTML += '<hr>';
+   
+    // Return the Legend div containing the HTML content
+    return div;
+};
+
+// Add Legend to Map
+legend.addTo(map);
+
+
     </script>
 </body>
 </html>
