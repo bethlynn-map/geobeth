@@ -28,17 +28,43 @@
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
    crossorigin=""></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <div id="mapid" style="width: 1000px; height: 600px">
     </div>
     <script>
-        var phlmap = L.map('mapid', {center: [39.981192, -75.155399], zoom: 10});
+        var phlmap = L.map('mapid', {center: [39.981192, -75.155399], zoom: 11});
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: 18,
-        id: 'mapbox.mapbox-streets-v8',
+        id: 'mapbox/light-v9',
         accessToken: 'pk.eyJ1IjoiYmV0aGx5bm4iLCJhIjoiY2s0NXBnYWVuMGJ5bjNrbzkxZnVuNXhiYiJ9.yatxgVacgYjZLPb7unNdFA'
-    }).addTo(phlmap);
 
+        }).addTo(phlmap);   
+
+        function getColor(d) {
+            return d > 51   ? '#08519c' :
+                   d > 36   ? '#3182bd' :
+                   d > 21   ? '#6baed6' :
+                   d > 4    ? '#bdd7e7' :
+                              '#eff3ff';
+        function style(feature) {
+            return {
+                fillColor: getColor(feature.properties.Percent_2),
+                weight: 2,
+                opacity: 1,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 0.7
+            };
+            }     
+
+        var tractdata = null;
+            $.getJSON("data/tracts_final.geojson",function(data){
+            tractdata = L.geoJson(data, {
+            style: style,
+        }).addTo(phlmap);
+        });
+        };   
     </script>
 </body>
 </html>
