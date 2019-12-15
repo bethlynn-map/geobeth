@@ -76,10 +76,10 @@
     </div>
     <script>
 function setColorFunc(density){
-    return density > 53 ? '#a50f15' :
-           density > 31 ? '#de2d26' :
-           density > 19 ? '#fb6a4a' :
-           density > 4 ? '#fcae91' :
+    return density > 7731 ? '#a50f15' :
+           density > 5954 ? '#de2d26' :
+           density > 3977 ? '#fb6a4a' :
+           density > 1954 ? '#fcae91' :
                          '#fee5d9';
 };
 function styleFunc(feature) {
@@ -141,14 +141,14 @@ var legend = L.control({position: 'bottomright'});
 legend.onAdd = function (map) {
     // Create Div Element and Populate it with HTML
     var div = L.DomUtil.create('div', 'legend');            
-    div.innerHTML += '<b>Children with elevated BLL</b><br />';
+    div.innerHTML += '<b>Total Population</b><br />';
     div.innerHTML += 'by census tract, quantile distribution<br />';
     div.innerHTML += '<br>';
-    div.innerHTML += '<i style="background: #a50f15"></i><p>26-81</p>';
-    div.innerHTML += '<i style="background: #de2d26"></i><p>14-26</p>';
-    div.innerHTML += '<i style="background: #fb6a4a"></i><p>7-14</p>';
-    div.innerHTML += '<i style="background: #fcae91"></i><p>0-7</p>';
-    div.innerHTML += '<i style="background: #fee5d9"></i><p>No info</p>';
+    div.innerHTML += '<i style="background: #a50f15"></i><p>7732-9509</p>';
+    div.innerHTML += '<i style="background: #de2d26"></i><p>5955-7731</p>';
+    div.innerHTML += '<i style="background: #fb6a4a"></i><p>3978-5954</p>';
+    div.innerHTML += '<i style="background: #fcae91"></i><p>1955-3977</p>';
+    div.innerHTML += '<i style="background: #fee5d9"></i><p>0-1954</p>';
     div.innerHTML += '<hr>';
    
     // Return the Legend div containing the HTML content
