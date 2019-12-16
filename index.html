@@ -123,7 +123,7 @@ function onEachFeature(feature, layer){
     layer.bindPopup('Total Population: '+feature.properties.Total_Popu);
 }
  var tractsLayer = null;
-    $.getJSON("data/tracts_final.geojson",function(data){
+    $.getJSON("tracts_final.geojson",function(data){
         tractsLayer = L.geoJson(data, {
             style: styleFunc,
             onEachFeature: onEachFeature
